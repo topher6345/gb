@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+require 'io/console'
+
+begin
+  require 'colorize'
+rescue LoadError
+  class String
+    def colorize(_ = nil); self; end
+  end
+end
+
+play_sounds = true
+
+branches = `git branch`.split("\n")
+branch_count = branches.count
+
+current_position = branches.index { |o| o[0] == '*' }
+
+branches.map! { |o| o.gsub(/\A.{2}/, '') }
+
+# Mark current branch in blue
+branches[current_position] = \
+  branches[current_position]
+
+begin_position = current_position
+
+def draw(current_position, branches, begin_position)
+  system('clear')
+  branches.each_with_index do |tail, index|
+    if index.eql?(begin_position)
+      puts(('* ' + tail).colorize(:blue))
+    elsif index.eql?(current_position) && begin_position == current_position
+      puts(('* ' + tail).colorize(:blue))
+    elsif index.eql?(current_position) && begin_position != current_position
+      puts(('* ' + tail).colorize(:green))
+    else
+      puts '  ' + tail
+    end
+  end
+
+  puts 'git branch ' + branches[begin_position].colorize(:blue) + \
+       ' → '.colorize(:red) + branches[current_position].colorize(:green)
+end
+
+fork { `afplay bin/woor2.aif` } if play_sounds
+draw(current_position, branches, begin_position)
+
+until (input = STDIN.getch) == "\r"
+  case input
+  when 'j'
+    fork { `afplay bin/bling1nice.aif` } if play_sounds
+    current_position <= (branch_count - 2) ? current_position += 1 : nil
+  when 'k'
+    fork { `afplay bin/chipchip.aif` } if play_sounds
+    current_position.positive? ? current_position -= 1 : nil
+  when 'q'
+    exit(0)
+  end
+  draw(current_position, branches, begin_position)
+end
+
+fork { `afplay bin/wermenrenre.aif` } if play_sounds
+
+puts `git checkout #{branches[current_position]}`
