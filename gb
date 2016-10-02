@@ -20,16 +20,14 @@ branches.map! { |o| o.gsub(/\A.{2}/, '') }
 
 # Mark current branch in blue
 branches[current_position] = \
-  branches[current_position]
+  branches[current_position].colorize(:blue)
 
 begin_position = current_position
 
 def draw(current_position, branches, begin_position)
   system('clear')
   branches.each_with_index do |tail, index|
-    if index.eql?(begin_position)
-      puts(('* ' + tail).colorize(:blue))
-    elsif index.eql?(current_position) && begin_position == current_position
+    if index.eql?(current_position) && begin_position == current_position
       puts(('* ' + tail).colorize(:blue))
     elsif index.eql?(current_position) && begin_position != current_position
       puts(('* ' + tail).colorize(:green))
@@ -42,16 +40,16 @@ def draw(current_position, branches, begin_position)
        ' → '.colorize(:red) + branches[current_position].colorize(:green)
 end
 
-fork { `afplay bin/woor2.aif` } if play_sounds
+fork { `afplay woor2.aif` } if play_sounds
 draw(current_position, branches, begin_position)
 
 until (input = STDIN.getch) == "\r"
   case input
   when 'j'
-    fork { `afplay bin/bling1nice.aif` } if play_sounds
-    current_position <= (branch_count - 2) ? current_position += 1 : nil
+    fork { `afplay bling1nice.aif` } if play_sounds
+    current_position < branch_count -1  ? current_position += 1 : nil
   when 'k'
-    fork { `afplay bin/chipchip.aif` } if play_sounds
+    fork { `afplay chipchip.aif` } if play_sounds
     current_position.positive? ? current_position -= 1 : nil
   when 'q'
     exit(0)
@@ -59,6 +57,6 @@ until (input = STDIN.getch) == "\r"
   draw(current_position, branches, begin_position)
 end
 
-fork { `afplay bin/wermenrenre.aif` } if play_sounds
+fork { `afplay wermenrenre.aif` } if play_sounds
 
-puts `git checkout #{branches[current_position]}`
+puts `git checkout #{branches[current_position].uncolorize}`
