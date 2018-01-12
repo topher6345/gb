@@ -69,7 +69,6 @@ def draw(current_position, branches, begin_position)
   puts "git branch " + branches[begin_position].dup.colorize(:blue) +
        " → " + branches[current_position].dup.colorize(:green)
   puts "\n"
-  # commit_message = `git show -s --format=%B #{branches[current_position].dup.uncolorize} | cat`
   foo = branches[current_position].dup
   commit_message = `git show -s --format=%B #{foo[12..-1]} | cat`
   puts commit_message.colorize(:black).on_yellow
