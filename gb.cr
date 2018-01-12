@@ -15,7 +15,7 @@ class String
   end
 
   def uncolorize
-    str = self.class.new
+    str = String.new
     scan_for_colors.each do |match|
       str = str + match[3]
     end
@@ -39,7 +39,6 @@ class String
   end
 end
 
-play_sounds = true
 branches = `git branch  --sort=-committerdate | head -n 13 | sort`.split("\n")
 branch_count = branches.size
 current_branch = `git branch`.split("\n").select { |s| s.match(/\*/) }.first[2..-1]
@@ -48,7 +47,7 @@ branches.map! { |o| o.size > 0 ? o[2..-1] : o }
 puts current_position
 # Mark current branch in blue
 exit(45) if current_position.nil?
-branches[current_position] = branches[current_position].colorize(:blue)
+# branches[current_position] = branches[current_position].colorize(:blue)
 
 begin_position = current_position
 
@@ -69,31 +68,29 @@ def draw(current_position, branches, begin_position)
   puts "git branch " + branches[begin_position].dup.colorize(:blue) +
        " → " + branches[current_position].dup.colorize(:green)
   puts "\n"
-  foo = branches[current_position].dup
-  commit_message = `git show -s --format=%B #{foo[12..-1]} | cat`
+  puts branches[current_position]
+  commit_message = `git show -s --format=%B #{branches[current_position]} | cat`
   puts commit_message.colorize(:black).on_yellow
 end
 
-fork { `afplay /usr/local/bin/woor2.aif` } if play_sounds
 draw(current_position, branches, begin_position)
-until (input = (STDIN.raw &.read_char)) == "\r"
-  case input
+loop do
+  case STDIN.raw(&.read_char)
   when 'j'
-    fork { `afplay /usr/local/bin/bling1nice.aif` } if play_sounds
     exit(23) if current_position.nil?
     current_position < branch_count - 1 ? (current_position += 1) : 0
   when 'k'
-    fork { `afplay /usr/local/bin/chipchip.aif` } if play_sounds
     exit(38) if current_position.nil?
     current_position > 0 ? (current_position -= 1) : 0
   when 'q'
     exit(0)
+  when '\r'
+    break
   else
     exit(1)
   end
   draw(current_position, branches, begin_position)
 end
 
-fork { `afplay /usr/local/bin/wermenrenre.aif` } if play_sounds
 exit(1) if current_position.nil?
-puts `git checkout #{branches[current_position].uncolorize}`
+puts `git checkout #{branches[current_position]}`
