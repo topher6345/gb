@@ -40,14 +40,13 @@ class String
 end
 
 play_sounds = true
-
 branches = `git branch  --sort=-committerdate | head -n 13 | sort`.split("\n")
-branch_count = branches.count { |a| a }
+branch_count = branches.size
 current_branch = `git branch`.split("\n").select { |s| s.match(/\*/) }.first[2..-1]
-current_position = branches.index { |s| s[current_branch] }
+current_position = branches.index { |s| s.match(/#{current_branch}/) }
 branches.map! { |o| o.size > 0 ? o[2..-1] : o }
-
-# # Mark current branch in blue
+puts current_position
+# Mark current branch in blue
 exit(45) if current_position.nil?
 branches[current_position] = branches[current_position].colorize(:blue)
 
@@ -72,7 +71,6 @@ def draw(current_position, branches, begin_position)
   puts "\n"
   # commit_message = `git show -s --format=%B #{branches[current_position].dup.uncolorize} | cat`
   foo = branches[current_position].dup
-  puts
   commit_message = `git show -s --format=%B #{foo[12..-1]} | cat`
   puts commit_message.colorize(:black).on_yellow
 end
