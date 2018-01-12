@@ -41,11 +41,10 @@ def draw(current_position, branches, begin_position, commit_messages)
   end
   puts output +
        "\n" +
-       "git branch " +
        branches[begin_position].blue +
        " → ".red +
        branches[current_position].green +
-       "\n" +
+       "\n\n" +
        commit_messages[current_position].on_yellow
 end
 
