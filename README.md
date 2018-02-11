@@ -11,7 +11,12 @@ usage `./gb`
 `enter` switch to branch
 
 
-# A small Ruby program rewritten in Crystal
+# Crystal version 
+
+`crystal gb.cr` to run interpreted
+
+`crystal build gb.cr -o gbb` to compile
+
 
 The crystal value propositions
 
@@ -23,42 +28,6 @@ The crystal value propositions
   ruby    	0.75	21.1 MB	2      
   crystal 	0.01	<1KB   	8      
 
-
-
-- j to go up
-- k to go down
-- enter to switch to that branch and quit the program
-- any other key to quit
-
-
-
-
-
-What does the program do?
-
-Switch git branches
-
-launch the program, and then use vim keybindings
-
-
-
-1. run commands to load the output of git shell commands into data structures
-2. figure out the initial paint
-3. listen for keys
-   - j to go up
-   - k to go down
-   - enter to switch to that branch and quit the program
-   - any other key to quit
-
-sh
-
-Split Lines
-
-    branches = `git branch  --sort=-committerdate | head -n 13 | sort`.split("\n")
-
-backticks as a way to launch shell commands
-
-    branches = `git branch --sort=-committerdate | head -n 13 | sort`.split("\n") || [""]
 
 
 
